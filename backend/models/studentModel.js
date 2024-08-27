@@ -8,7 +8,7 @@ const studentSchema = new mongoose.Schema({
   university: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "University",
-    required: true,
+    // required: true,
   },
   degree: { type: String },
   major: { type: String },
