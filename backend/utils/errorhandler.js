@@ -4,7 +4,7 @@ class ErrorHandler extends Error {
     this.statusCode = statusCode;
 
     // Capture the stack trace
-    Err.captureStackTrace(this, this.constructor);
+    Error.captureStackTrace(this, this.constructor);
   }
 }
 
