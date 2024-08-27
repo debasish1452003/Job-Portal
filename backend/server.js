@@ -2,6 +2,7 @@ import app from "./app.js";
 
 import colors from "colors";
 import dotenv from "dotenv";
+import ConnectDatabase from "./config/database.js";
 
 // Handling Uncaught Exception
 process.on("uncaughtException", (err) => {
@@ -13,6 +14,9 @@ process.on("uncaughtException", (err) => {
 // Config
 
 dotenv.config({ path: "config/config.env" });
+
+// Connecting Database
+ConnectDatabase();
 
 const server = app.listen(process.env.PORT, () => {
   console.log(
