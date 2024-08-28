@@ -1,5 +1,9 @@
 import express from "express";
-import { createStudent } from "../controllers/studentController.js";
+import {
+  createStudent,
+  loginStudent,
+  logout,
+} from "../controllers/studentController.js";
 // import {
 //   isAuthenticatedStudent,
 //     authorizeRoles,
@@ -8,6 +12,8 @@ import { createStudent } from "../controllers/studentController.js";
 const router = express.Router();
 
 router.route("/register").post(createStudent);
-router.route("/login").post(login);
+router.route("/login").post(loginStudent);
+
+router.route("/logout").get(logout);
 
 export default router;
