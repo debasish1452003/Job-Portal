@@ -31,7 +31,7 @@ export const createStudent = catchAsyncErrors(async (req, res, next) => {
   sendToken(student, 201, res);
 });
 
-// Login User
+// Login Student
 export const loginStudent = catchAsyncErrors(async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -65,5 +65,115 @@ export const logout = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Logged Out",
+  });
+});
+
+// ----------------------------  Student Details -------------------------------------
+
+// GET STUDENT DETAILS
+export const getStudentDetails = catchAsyncErrors(async (req, res, next) => {
+  const student = await Student.findById(req.student.id);
+
+  res.status(200).json({
+    success: true,
+    student,
+  });
+});
+
+// Update Student password
+export const updatePassword = catchAsyncErrors(async (req, res, next) => {
+  const student = await Student.findById(req.student.id).select("+password");
+
+  const isPasswordMatched = await student.comparePassword(req.body.oldPassword);
+
+  if (!isPasswordMatched) {
+    return next(new ErrorHander("Old password is incorrect", 400));
+  }
+
+  if (req.body.newPassword != req.body.confirmPassword) {
+    return next(new ErrorHander("password does not match", 400));
+  }
+
+  student.password = req.body.newPassword;
+
+  await student.save();
+
+  sendToken(student, 200, res);
+});
+
+// Update Student Profile
+export const updateProfile = catchAsyncErrors(async (req, res, next) => {
+  const newStudentData = {
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+  };
+
+  // if (req.body.avatar && req.body.avatar !== "") {
+  //   const user = await User.findById(req.user.id);
+
+  //   if (!user) {
+  //     // Handle case where user is not found
+  //     return res.status(404).json({ message: "User not found" });
+  //   }
+
+  //   const imageId = user.avatar.public_id;
+
+  //   if (imageId) {
+  //     await cloudinary.v2.uploader.destroy(imageId);
+  //   }
+
+  //   const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+  //     folder: "avatars",
+  //     width: 150,
+  //     crop: "scale",
+  //   });
+
+  //   newUserData.avatar = {
+  //     public_id: myCloud.public_id,
+  //     url: myCloud.secure_url,
+  //   };
+  // }
+
+  const student = await Student.findByIdAndUpdate(
+    req.student.id,
+    newStudentData,
+    {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    }
+  );
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
+// ------------------------------Admin Controllers -------------------------------
+
+// Get all students(admin)
+export const getAllstudents = catchAsyncErrors(async (req, res, next) => {
+  const students = await Student.find();
+
+  res.status(200).json({
+    success: true,
+    students,
+  });
+});
+
+// Get Single Student (admin)
+export const getSingleStudent = catchAsyncErrors(async (req, res, next) => {
+  const student = await Student.findById(req.params.id);
+
+  if (!student) {
+    return next(
+      new ErrorHander(`User does not exist with Id: ${req.params.id}`)
+    );
+  }
+
+  res.status(200).json({
+    success: true,
+    student,
   });
 });

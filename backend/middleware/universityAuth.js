@@ -1,9 +1,9 @@
 import ErrorHandler from "../utils/errorhandler.js";
 import catchAsyncErrors from "./catchAsyncError.js";
 import jwt from "jsonwebtoken";
-import studentUser from "../models/studentModel.js";
+import university from "../models/universityModel.js";
 
-export const isAuthenticatedStudent = catchAsyncErrors(
+export const isAuthenticatedUniversity = catchAsyncErrors(
   async (req, res, next) => {
     const { token } = req.cookies;
 
@@ -15,17 +15,17 @@ export const isAuthenticatedStudent = catchAsyncErrors(
 
     const decodedData = jwt.verify(token, process.env.JWT_SECRET);
 
-    req.student = await studentUser.findById(decodedData.id);
+    req.university = await university.findById(decodedData.id);
     next();
   }
 );
 
 export const authorizeRoles = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.student.role)) {
+    if (!roles.includes(req.university.role)) {
       return next(
         new ErrorHandler(
-          `Role: ${req.student.role} is not allowed to access this resource`,
+          `Role: ${req.university.role} is not allowed to access this resource`,
           403
         )
       );
