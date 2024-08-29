@@ -4,6 +4,9 @@ import cookieParser from "cookie-parser";
 
 import students from "./routes/studentRoutes.js";
 import university from "./routes/universityRoutes.js";
+import employer from "./routes/employerRoutes.js";
+import job from "./routes/jobRoutes.js";
+
 import errorMiddleware from "./middleware/error.js";
 
 const app = express();
@@ -16,6 +19,8 @@ dotenv.config({ path: "backend/config/config.env" });
 
 app.use("/api/v1", students);
 app.use("/api/v1", university);
+app.use("/api/v1", employer);
+app.use("/api/v1", job);
 
 // Middleware for Errors
 app.use(errorMiddleware);

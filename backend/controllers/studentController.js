@@ -1,5 +1,6 @@
 import catchAsyncErrors from "../middleware/catchAsyncError.js";
 import Student from "../models/studentModel.js";
+import University from "../models/universityModel.js";
 import sendToken from "../utils/jwtToken.js";
 
 // Create Student user
@@ -9,7 +10,7 @@ export const createStudent = catchAsyncErrors(async (req, res, next) => {
     lastName,
     email,
     password,
-    //university,
+    university,
     degree,
     major,
     graduationYear,
@@ -21,12 +22,18 @@ export const createStudent = catchAsyncErrors(async (req, res, next) => {
     lastName,
     email,
     password,
-    // university,
+    university,
     degree,
     major,
     graduationYear,
     skills,
   });
+
+  await University.findByIdAndUpdate(
+    university,
+    { $push: { students: student._id } },
+    { new: true, runValidators: true }
+  );
 
   sendToken(student, 201, res);
 });

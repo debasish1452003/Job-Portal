@@ -6,7 +6,8 @@ const jobSchema = new mongoose.Schema({
   location: { type: String, required: true },
   salary: { type: Number },
 
-  requirements: [{ type: String }],
+  requirements: { type: String },
+
   employer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Employer",
@@ -18,6 +19,7 @@ const jobSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "University",
   },
+
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

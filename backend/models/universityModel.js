@@ -7,6 +7,10 @@ import crypto from "crypto";
 const universitySchema = new mongoose.Schema({
   name: { type: String, required: true },
   address: { type: String, required: true },
+  role: {
+    type: String,
+    default: "university",
+  },
   description: { type: String },
   password: { type: String, required: true },
   website: { type: String },

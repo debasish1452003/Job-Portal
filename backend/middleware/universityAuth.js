@@ -1,7 +1,7 @@
 import ErrorHandler from "../utils/errorhandler.js";
 import catchAsyncErrors from "./catchAsyncError.js";
 import jwt from "jsonwebtoken";
-import university from "../models/universityModel.js";
+import University from "../models/universityModel.js";
 
 export const isAuthenticatedUniversity = catchAsyncErrors(
   async (req, res, next) => {
@@ -15,7 +15,7 @@ export const isAuthenticatedUniversity = catchAsyncErrors(
 
     const decodedData = jwt.verify(token, process.env.JWT_SECRET);
 
-    req.university = await university.findById(decodedData.id);
+    req.university = await University.findById(decodedData.id);
     next();
   }
 );
