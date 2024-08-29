@@ -1,6 +1,7 @@
 // const ApiFeatures = require("../utils/apifeatures");
 // const cloudinary = require("cloudinary");
 import Job from "../models/jobModel.js";
+import Student from "../models/studentModel.js";
 import ErrorHandler from "../utils/errorhandler.js";
 import catchAsyncErrors from "../middleware/catchAsyncError.js";
 
@@ -35,6 +36,12 @@ export const applyForJob = catchAsyncErrors(async (req, res, next) => {
   if (!job) {
     return next(new ErrorHandler("Job not found", 404));
   }
+
+  const student = await Student.findByIdAndUpdate(
+    studentId,
+    { $addToSet: { appliedJobs: jobId } },
+    { new: true, runValidators: true }
+  );
 
   res.status(200).json({
     success: true,
