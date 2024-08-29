@@ -22,7 +22,7 @@ export const isAuthenticatedStudent = catchAsyncErrors(
   }
 );
 
-export const authorizeRoles = (...roles) => {
+export const authorizeStudentRoles = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.student.role)) {
       return next(

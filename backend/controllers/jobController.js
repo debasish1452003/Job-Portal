@@ -16,39 +16,29 @@ export const createJob = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-// Apply for Jobs
-export const applyForJob = async (req, res, next) => {
-  try {
-    // Extract jobId from route parameters and studentId from request body
-    const { studentId } = req.body;
-    const { jobId } = req.params;
+// Apply for Jobs --Students
+export const applyForJob = catchAsyncErrors(async (req, res, next) => {
+  const { jobId } = req.params;
 
-    // Validate input
-    if (!studentId) {
-      return next(new ErrorHandler("Student ID is required", 400));
-    }
-
-    // Find the job and add the student to the applicants array
-    const job = await Job.findByIdAndUpdate(
-      jobId,
-      { $addToSet: { applicants: studentId } }, // Add student ID to applicants array if not already present
-      { new: true, runValidators: true }
-    );
-
-    if (!job) {
-      return next(new ErrorHandler("Job not found", 404));
-    }
-
-    // Optionally, update the student document (e.g., to track applied jobs)
-    // You can extend the Student schema to include an array of applied job IDs if needed
-
-    // Send response
-    res.status(200).json({
-      success: true,
-      message: "Application successful",
-      job,
-    });
-  } catch (error) {
-    return next(new ErrorHandler(error.message, 500));
+  if (!req.student || !req.student._id) {
+    return next(new ErrorHandler("User not authenticated", 401));
   }
-};
+
+  const studentId = req.student._id;
+
+  const job = await Job.findByIdAndUpdate(
+    jobId,
+    { $addToSet: { applicants: studentId } },
+    { new: true, runValidators: true }
+  );
+
+  if (!job) {
+    return next(new ErrorHandler("Job not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Application successful",
+    job,
+  });
+});

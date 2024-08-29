@@ -1,9 +1,13 @@
 import express from "express";
-import { createJob } from "../controllers/jobController.js";
+import { applyForJob, createJob } from "../controllers/jobController.js";
 import {
   isAuthenticatedRecruiter,
   authorizeRecruiterRoles,
 } from "../middleware/employerAuth.js";
+import {
+  isAuthenticatedStudent,
+  authorizeStudentRoles,
+} from "../middleware/studentAuth.js";
 
 const router = express.Router();
 
@@ -14,5 +18,12 @@ router
     authorizeRecruiterRoles("recruiter"),
     createJob
   );
+
+router.post(
+  "/jobs/:jobId",
+  isAuthenticatedStudent,
+  authorizeStudentRoles("student"),
+  applyForJob
+);
 
 export default router;
