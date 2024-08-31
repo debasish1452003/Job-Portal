@@ -13,7 +13,7 @@ import {
 const router = express.Router();
 
 router.route("/employerRegister").post(createEmployer);
-router.route("/employerLogin").post(loginEmployer);
+// router.route("/employerLogin").post(loginEmployer);
 
 router.route("/employerLogout").get(employerLogout);
 

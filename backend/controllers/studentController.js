@@ -39,28 +39,28 @@ export const createStudent = catchAsyncErrors(async (req, res, next) => {
 });
 
 // Login Student
-export const loginStudent = catchAsyncErrors(async (req, res, next) => {
-  const { email, password } = req.body;
+// export const loginStudent = catchAsyncErrors(async (req, res, next) => {
+//   const { email, password } = req.body;
 
-  // Checking if the user has provided both email and password
-  if (!email || !password) {
-    return next(new ErrorHandler("Please Enter Email & Password", 400));
-  }
+//   // Checking if the user has provided both email and password
+//   if (!email || !password) {
+//     return next(new ErrorHandler("Please Enter Email & Password", 400));
+//   }
 
-  const user = await Student.findOne({ email }).select("+password");
+//   const user = await Student.findOne({ email }).select("+password");
 
-  if (!user) {
-    return next(new ErrorHandler("Invalid email or password", 401));
-  }
+//   if (!user) {
+//     return next(new ErrorHandler("Invalid email or password", 401));
+//   }
 
-  const isPasswordMatched = await user.comparePassword(password);
+//   const isPasswordMatched = await user.comparePassword(password);
 
-  if (!isPasswordMatched) {
-    return next(new ErrorHandler("Invalid email or password", 401));
-  }
+//   if (!isPasswordMatched) {
+//     return next(new ErrorHandler("Invalid email or password", 401));
+//   }
 
-  sendToken(user, 200, res);
-});
+//   sendToken(user, 200, res);
+// });
 
 // LogOut Student
 export const logout = catchAsyncErrors(async (req, res, next) => {

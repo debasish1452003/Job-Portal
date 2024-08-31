@@ -4,7 +4,7 @@ import {
   getAllstudents,
   getSingleStudent,
   getStudentDetails,
-  loginStudent,
+  // loginStudent,
   logout,
   updatePassword,
   updateProfile,
@@ -15,7 +15,7 @@ import { isAuthenticatedStudent } from "../middleware/studentAuth.js";
 const router = express.Router();
 
 router.route("/register").post(createStudent);
-router.route("/login").post(loginStudent);
+// router.route("/login").post(loginStudent);
 
 router.route("/logout").get(logout);
 router.route("/student").get(isAuthenticatedStudent, getStudentDetails);
