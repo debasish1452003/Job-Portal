@@ -1,5 +1,9 @@
 import express from "express";
-import { applyForJob, createJob } from "../controllers/jobController.js";
+import {
+  applyForJob,
+  createJob,
+  getAllJobs,
+} from "../controllers/jobController.js";
 import {
   isAuthenticatedRecruiter,
   authorizeRecruiterRoles,
@@ -25,5 +29,7 @@ router.post(
   authorizeStudentRoles("student"),
   applyForJob
 );
+
+router.get("/jobs", getAllJobs);
 
 export default router;

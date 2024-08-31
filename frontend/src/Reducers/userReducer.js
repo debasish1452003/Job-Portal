@@ -12,6 +12,7 @@ import {
   LOAD_STUDENT_REQUEST,
   LOAD_STUDENT_SUCCESS,
   LOAD_STUDENT_FAIL,
+  STUDENT_LOGOUT_REQUEST,
   STUDENT_LOGOUT_SUCCESS,
   STUDENT_LOGOUT_FAIL,
 
@@ -25,6 +26,7 @@ import {
   LOAD_UNIVERSITY_REQUEST,
   LOAD_UNIVERSITY_SUCCESS,
   LOAD_UNIVERSITY_FAIL,
+  UNIVERSITY_LOGOUT_REQUEST,
   UNIVERSITY_LOGOUT_SUCCESS,
   UNIVERSITY_LOGOUT_FAIL,
 
@@ -38,6 +40,7 @@ import {
   LOAD_EMPLOYER_REQUEST,
   LOAD_EMPLOYER_SUCCESS,
   LOAD_EMPLOYER_FAIL,
+  EMPLOYER_LOGOUT_REQUEST,
   EMPLOYER_LOGOUT_SUCCESS,
   EMPLOYER_LOGOUT_FAIL,
 } from "../Constants/userConstant";
@@ -51,6 +54,7 @@ export const userReducer = (
     case STUDENT_LOGIN_REQUEST:
     case STUDENT_REGISTER_REQUEST:
     case LOAD_STUDENT_REQUEST:
+    case STUDENT_LOGOUT_REQUEST:
       return {
         ...state,
         loading: true,
@@ -77,27 +81,13 @@ export const userReducer = (
 
     case STUDENT_LOGIN_FAIL:
     case STUDENT_REGISTER_FAIL:
-      return {
-        ...state,
-        loading: false,
-        isAuthenticatedStudent: false,
-        student: null,
-        error: action.payload,
-      };
-
     case LOAD_STUDENT_FAIL:
-      return {
-        ...state,
-        loading: false,
-        isAuthenticatedStudent: false,
-        student: null,
-        error: action.payload,
-      };
-
     case STUDENT_LOGOUT_FAIL:
       return {
         ...state,
         loading: false,
+        isAuthenticatedStudent: false,
+        student: null,
         error: action.payload,
       };
 
@@ -105,6 +95,7 @@ export const userReducer = (
     case UNIVERSITY_LOGIN_REQUEST:
     case UNIVERSITY_REGISTER_REQUEST:
     case LOAD_UNIVERSITY_REQUEST:
+    case UNIVERSITY_LOGOUT_REQUEST:
       return {
         ...state,
         loading: true,
@@ -131,27 +122,13 @@ export const userReducer = (
 
     case UNIVERSITY_LOGIN_FAIL:
     case UNIVERSITY_REGISTER_FAIL:
-      return {
-        ...state,
-        loading: false,
-        isAuthenticatedUniversity: false,
-        university: null,
-        error: action.payload,
-      };
-
     case LOAD_UNIVERSITY_FAIL:
-      return {
-        ...state,
-        loading: false,
-        isAuthenticatedUniversity: false,
-        university: null,
-        error: action.payload,
-      };
-
     case UNIVERSITY_LOGOUT_FAIL:
       return {
         ...state,
         loading: false,
+        isAuthenticatedUniversity: false,
+        university: null,
         error: action.payload,
       };
 
@@ -159,6 +136,7 @@ export const userReducer = (
     case EMPLOYER_LOGIN_REQUEST:
     case EMPLOYER_REGISTER_REQUEST:
     case LOAD_EMPLOYER_REQUEST:
+    case EMPLOYER_LOGOUT_REQUEST:
       return {
         ...state,
         loading: true,
@@ -185,27 +163,13 @@ export const userReducer = (
 
     case EMPLOYER_LOGIN_FAIL:
     case EMPLOYER_REGISTER_FAIL:
-      return {
-        ...state,
-        loading: false,
-        isAuthenticatedEmployer: false,
-        employer: null,
-        error: action.payload,
-      };
-
     case LOAD_EMPLOYER_FAIL:
-      return {
-        ...state,
-        loading: false,
-        isAuthenticatedEmployer: false,
-        employer: null,
-        error: action.payload,
-      };
-
     case EMPLOYER_LOGOUT_FAIL:
       return {
         ...state,
         loading: false,
+        isAuthenticatedEmployer: false,
+        employer: null,
         error: action.payload,
       };
 

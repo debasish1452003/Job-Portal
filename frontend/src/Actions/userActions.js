@@ -1,7 +1,10 @@
 import axios from "axios";
 
 import {
-  CLEAR_ERRORS, // Common action to clear errors
+  CLEAR_ERRORS,
+  EMPLOYER_LOGOUT_REQUEST,
+  STUDENT_LOGOUT_REQUEST,
+  UNIVERSITY_LOGOUT_REQUEST, // Common action to clear errors
 } from "../Constants/userConstant";
 
 // Student Constants
@@ -93,6 +96,56 @@ export const login = (email, password, userType) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: failType,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// --------------------------- Log Out ---------------------------
+
+// Student Logout
+export const logoutStudent = () => async (dispatch) => {
+  try {
+    dispatch({ type: STUDENT_LOGOUT_REQUEST });
+
+    await axios.get("/api/v1/logout");
+
+    dispatch({ type: STUDENT_LOGOUT_SUCCESS });
+  } catch (error) {
+    dispatch({
+      type: STUDENT_LOGOUT_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// University Logout
+export const logoutUniversity = () => async (dispatch) => {
+  try {
+    dispatch({ type: UNIVERSITY_LOGOUT_REQUEST });
+
+    await axios.get("/api/v1/universityLogout");
+
+    dispatch({ type: UNIVERSITY_LOGOUT_SUCCESS });
+  } catch (error) {
+    dispatch({
+      type: UNIVERSITY_LOGOUT_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// Employer Logout
+export const logoutEmployer = () => async (dispatch) => {
+  try {
+    dispatch({ type: EMPLOYER_LOGOUT_REQUEST });
+
+    await axios.get("/api/v1/logout/employerLogout");
+
+    dispatch({ type: EMPLOYER_LOGOUT_SUCCESS });
+  } catch (error) {
+    dispatch({
+      type: EMPLOYER_LOGOUT_FAIL,
       payload: error.response.data.message,
     });
   }

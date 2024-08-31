@@ -4,6 +4,7 @@ import Job from "../models/jobModel.js";
 import Student from "../models/studentModel.js";
 import ErrorHandler from "../utils/errorhandler.js";
 import catchAsyncErrors from "../middleware/catchAsyncError.js";
+import ApiFeatures from "../utils/apifeatures.js";
 
 // Create Jobs --Recruiter
 export const createJob = catchAsyncErrors(async (req, res, next) => {
@@ -14,6 +15,30 @@ export const createJob = catchAsyncErrors(async (req, res, next) => {
   res.status(201).json({
     success: true,
     job,
+  });
+});
+
+// Get all Jobs
+export const getAllJobs = catchAsyncErrors(async (req, res, next) => {
+  const resultPerPage = 25;
+  const jobsCount = await Job.countDocuments();
+
+  const apiFeature = new ApiFeatures(
+    Job.find().populate("employer", "companyName"),
+    req.query
+  )
+    .search()
+    .filter();
+
+  apiFeature.pagination(resultPerPage);
+  let jobs = await apiFeature.query;
+  let filteredjobsCount = jobs.length;
+
+  res.status(200).json({
+    success: true,
+    jobs,
+    jobsCount,
+    filteredjobsCount,
   });
 });
 
