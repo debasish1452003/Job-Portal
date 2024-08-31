@@ -18,10 +18,12 @@ const LoginPage = () => {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [role, setRole] = useState("");
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   // Unified login submission handler
   const loginSubmit = (e) => {
     e.preventDefault();
+    setFormSubmitted(true);
     dispatch(login(loginEmail, loginPassword, role));
   };
 
@@ -35,7 +37,7 @@ const LoginPage = () => {
     }
 
     // Check the relevant authentication flag based on the role
-    if (
+    if (formSubmitted &&
       (role === "student" && isAuthenticatedStudent) ||
       (role === "university" && isAuthenticatedUniversity) ||
       (role === "employer" && isAuthenticatedEmployer)
@@ -43,7 +45,7 @@ const LoginPage = () => {
       enqueueSnackbar("Login successful!", { variant: "success" });
       navigate(redirect);
     }
-  }, [dispatch, error, enqueueSnackbar, navigate, isAuthenticatedStudent, isAuthenticatedUniversity, isAuthenticatedEmployer, redirect, role]);
+  }, [dispatch, error, formSubmitted, enqueueSnackbar, navigate, isAuthenticatedStudent, isAuthenticatedUniversity, isAuthenticatedEmployer, redirect, role]);
 
   const isFormValid = loginEmail && loginPassword && role;
 
