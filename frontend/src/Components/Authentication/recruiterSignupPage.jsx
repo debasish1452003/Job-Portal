@@ -6,6 +6,7 @@ import { MdHomeWork } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { BsBrowserEdge } from "react-icons/bs";
 import { Link } from "react-router-dom";
+
 function RecruiterSignupPage() {
   return (
     <div className="border-2 border-green-500 mt-10 py-4 mx-4 rounded-xl lg:w-2/6 lg:mx-auto">
