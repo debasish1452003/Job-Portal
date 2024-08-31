@@ -1,8 +1,6 @@
-import Student from "../models/studentModel.js";
-import University from "../models/universityModel.js";
-import Employer from "../models/employerModel.js";
-import sendToken from "../utils/jwtToken.js";
-
+import Student from "../models/Student";
+import Employer from "../models/Employer";
+import University from "../models/University";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import ErrorHandler from "../utils/errorhandler.js";
