@@ -1,11 +1,11 @@
-import Student from "../models/Student";
-import Employer from "../models/Employer";
-import University from "../models/University";
+import Student from "../models/studentModel.js";
+import Employer from "../models/employerModel.js";
+import University from "../models/universityModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import ErrorHandler from "../utils/errorhandler.js";
 import catchAsyncError from "../middleware/catchAsyncError.js";
-
+import sendToken from "../utils/jwtToken.js";
 // All Login Controlls
 export const login = catchAsyncError(async (req, res, next) => {
   const { email, password, userType } = req.body;
