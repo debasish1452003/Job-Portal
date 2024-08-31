@@ -1,5 +1,6 @@
 import catchAsyncErrors from "../middleware/catchAsyncError.js";
 import University from "../models/universityModel.js";
+import ErrorHandler from "../utils/errorhandler.js";
 import sendToken from "../utils/jwtToken.js";
 
 // Create University
@@ -79,11 +80,11 @@ export const updateUniversityPassword = catchAsyncErrors(
     );
 
     if (!isPasswordMatched) {
-      return next(new ErrorHander("Old password is incorrect", 400));
+      return next(new ErrorHandler("Old password is incorrect", 400));
     }
 
     if (req.body.newPassword != req.body.confirmPassword) {
-      return next(new ErrorHander("password does not match", 400));
+      return next(new ErrorHandler("password does not match", 400));
     }
 
     university.password = req.body.newPassword;
