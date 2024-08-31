@@ -25,12 +25,11 @@ const LoginPage = () => {
     dispatch(login(loginEmail, loginPassword, role));
   };
 
-  // Determine the redirection route
-  const redirect = location.search ? location.search.split("=")[1] : "/account";
+  const redirect = location.search ? location.search.split("=")[1] : "/Home";
 
   useEffect(() => {
     if (error) {
-      // window.alert(error);  
+
       enqueueSnackbar(error, { variant: 'error' });
       dispatch(clearErrors());
     }
@@ -45,6 +44,8 @@ const LoginPage = () => {
       navigate(redirect);
     }
   }, [dispatch, error, enqueueSnackbar, navigate, isAuthenticatedStudent, isAuthenticatedUniversity, isAuthenticatedEmployer, redirect, role]);
+
+  const isFormValid = loginEmail && loginPassword && role;
 
   return (
     <div className="border-2 border-green-500 mt-16 py-4 mx-4 rounded-xl lg:w-2/6 lg:mx-auto">
@@ -91,6 +92,7 @@ const LoginPage = () => {
         <button
           type="submit"
           className="text-white bg-gradient-to-r from-green-500 to-cyan-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 w-2/5 mt-4"
+          disabled={!isFormValid}
         >
           Login
         </button>
