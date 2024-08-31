@@ -3,6 +3,7 @@ import Student from "../models/studentModel.js";
 import University from "../models/universityModel.js";
 import sendToken from "../utils/jwtToken.js";
 import Job from "../models/jobModel.js";
+
 // Create Student user
 export const createStudent = catchAsyncErrors(async (req, res, next) => {
   const {
@@ -186,22 +187,20 @@ export const getSingleStudent = catchAsyncErrors(async (req, res, next) => {
 });
 
 // delete student prfile
-export const deleteProfile = catchAsyncErrors(async(req,res,next)=>{
-    const student = await Student.findById(req.id);
-    // delete the student form all applied job 
-    // student.appliedJobs.forEach(async(jobid)=>{
-    //    const job_id= await Job.findById(jobid);
-    //    const index = await job_id.applicants()
-    // })
-    await Student.deleteOne();
-    res.clearCookie("jwt", {
-      httpOnly: true,
-      secure: true,
-    });
-    res.status(200).json({
-      success: true,
-      message :"your profile deleted sucessfully"
-    });
-    
-    
-})
+export const deleteProfile = catchAsyncErrors(async (req, res, next) => {
+  const student = await Student.findById(req.id);
+  // delete the student form all applied job
+  // student.appliedJobs.forEach(async(jobid)=>{
+  //    const job_id= await Job.findById(jobid);
+  //    const index = await job_id.applicants()
+  // })
+  await Student.deleteOne();
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    secure: true,
+  });
+  res.status(200).json({
+    success: true,
+    message: "your profile deleted sucessfully",
+  });
+});
