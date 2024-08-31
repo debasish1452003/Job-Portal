@@ -8,6 +8,7 @@ import {
   logout,
   updatePassword,
   updateProfile,
+  deleteProfile
 } from "../controllers/studentController.js";
 
 import { isAuthenticatedStudent } from "../middleware/studentAuth.js";
@@ -21,6 +22,7 @@ router.route("/logout").get(logout);
 router.route("/student").get(isAuthenticatedStudent, getStudentDetails);
 router.route("/password/update").put(isAuthenticatedStudent, updatePassword);
 router.route("/student/update").put(isAuthenticatedStudent, updateProfile);
+router.route("/student/delete").delete(isAuthenticatedStudent,deleteProfile);
 
 // router
 //   .route("/admin/users")
