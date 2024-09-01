@@ -24,7 +24,7 @@ export const login = catchAsyncError(async (req, res, next) => {
     case "student":
       UserModel = Student;
       break;
-    case "recruiter":
+    case "employer":
       UserModel = Employer;
       break;
     case "university":

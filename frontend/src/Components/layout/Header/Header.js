@@ -20,6 +20,15 @@ const Header = () => {
     isAuthenticatedEmployer,
   } = useSelector((state) => state.user);
 
+  // Determine the profile route based on the user type
+  const profileRoute = isAuthenticatedStudent
+    ? "/student/profile"
+    : isAuthenticatedUniversity
+    ? "/university/profile"
+    : isAuthenticatedEmployer
+    ? "/employer/profile"
+    : "/login";
+
   // Handle logout
   const handleLogout = () => {
     if (isAuthenticatedStudent) {
@@ -46,6 +55,9 @@ const Header = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
+            <Nav.Link as={Link} to="/home" className="nav-link">
+              Home
+            </Nav.Link>
             <Nav.Link as={Link} to="/jobs" className="nav-link">
               Jobs
             </Nav.Link>
@@ -69,7 +81,7 @@ const Header = () => {
                 >
                   Logout
                 </Button>
-                <Link to="/profile" className="ml-3">
+                <Link to={profileRoute} className="ml-3">
                   <img
                     src="https://i.postimg.cc/RFDc5M6M/user-2.png"
                     alt="Profile"
@@ -83,16 +95,14 @@ const Header = () => {
                 </Link>
               </>
             ) : (
-              <>
-                <Button
-                  variant="outline-primary"
-                  as={Link}
-                  to="/login"
-                  className="mr-2"
-                >
-                  Login
-                </Button>
-              </>
+              <Button
+                variant="outline-primary"
+                as={Link}
+                to="/login"
+                className="mr-2"
+              >
+                Login
+              </Button>
             )}
           </div>
         </Navbar.Collapse>

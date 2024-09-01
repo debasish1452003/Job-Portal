@@ -15,9 +15,9 @@ import {
   STUDENT_REGISTER_REQUEST,
   STUDENT_REGISTER_SUCCESS,
   STUDENT_REGISTER_FAIL,
-  LOAD_STUDENT_REQUEST,
-  LOAD_STUDENT_SUCCESS,
-  LOAD_STUDENT_FAIL,
+  // LOAD_STUDENT_REQUEST,
+  // LOAD_STUDENT_SUCCESS,
+  // LOAD_STUDENT_FAIL,
   STUDENT_LOGOUT_SUCCESS,
   STUDENT_LOGOUT_FAIL,
 } from "../Constants/userConstant";
@@ -92,7 +92,7 @@ export const login = (email, password, userType) => async (dispatch) => {
     );
 
     // Dispatch based on role success type
-    dispatch({ type: successType, payload: data[userType] });
+    dispatch({ type: successType, payload: data });
   } catch (error) {
     dispatch({
       type: failType,
@@ -154,26 +154,26 @@ export const logoutEmployer = () => async (dispatch) => {
 //  ------------------------- Student Actions ----------------------
 
 // Student Login
-export const studentLogin = (email, password, userType) => async (dispatch) => {
-  try {
-    dispatch({ type: STUDENT_LOGIN_REQUEST });
+// export const studentLogin = (email, password, userType) => async (dispatch) => {
+//   try {
+//     dispatch({ type: STUDENT_LOGIN_REQUEST });
 
-    const config = { headers: { "Content-Type": "application/json" } };
+//     const config = { headers: { "Content-Type": "application/json" } };
 
-    const { data } = await axios.post(
-      `/api/v1/student/login`,
-      { email, password, userType },
-      config
-    );
+//     const { data } = await axios.post(
+//       `/api/v1/student/login`,
+//       { email, password, userType },
+//       config
+//     );
 
-    dispatch({ type: STUDENT_LOGIN_SUCCESS, payload: data.student });
-  } catch (error) {
-    dispatch({
-      type: STUDENT_LOGIN_FAIL,
-      payload: error.response.data.message,
-    });
-  }
-};
+//     dispatch({ type: STUDENT_LOGIN_SUCCESS, payload: data.student });
+//   } catch (error) {
+//     dispatch({
+//       type: STUDENT_LOGIN_FAIL,
+//       payload: error.response.data.message,
+//     });
+//   }
+// };
 
 // Student Register
 export const studentRegister = (studentData) => async (dispatch) => {
@@ -198,17 +198,17 @@ export const studentRegister = (studentData) => async (dispatch) => {
 };
 
 // Load Student
-export const loadStudent = () => async (dispatch) => {
-  try {
-    dispatch({ type: LOAD_STUDENT_REQUEST });
+// export const loadStudent = () => async (dispatch) => {
+//   try {
+//     dispatch({ type: LOAD_STUDENT_REQUEST });
 
-    const { data } = await axios.get(`/api/v1/student/me`);
+//     const { data } = await axios.get(`/api/v1/student/me`);
 
-    dispatch({ type: LOAD_STUDENT_SUCCESS, payload: data.student });
-  } catch (error) {
-    dispatch({ type: LOAD_STUDENT_FAIL, payload: error.response.data.message });
-  }
-};
+//     dispatch({ type: LOAD_STUDENT_SUCCESS, payload: data.student });
+//   } catch (error) {
+//     dispatch({ type: LOAD_STUDENT_FAIL, payload: error.response.data.message });
+//   }
+// };
 
 // Student Logout
 export const studentLogout = () => async (dispatch) => {
@@ -227,26 +227,27 @@ export const studentLogout = () => async (dispatch) => {
 // ----------------------------------Universit Actions -----------------------------
 
 // University Login
-export const universityLogin = (email, password) => async (dispatch) => {
-  try {
-    dispatch({ type: UNIVERSITY_LOGIN_REQUEST });
+// export const universityLogin =
+//   (email, password, userType) => async (dispatch) => {
+//     try {
+//       dispatch({ type: UNIVERSITY_LOGIN_REQUEST });
 
-    const config = { headers: { "Content-Type": "application/json" } };
+//       const config = { headers: { "Content-Type": "application/json" } };
 
-    const { data } = await axios.post(
-      `/api/v1/university/login`,
-      { email, password },
-      config
-    );
+//       const { data } = await axios.post(
+//         `/api/v1/university/login`,
+//         { email, password, userType },
+//         config
+//       );
 
-    dispatch({ type: UNIVERSITY_LOGIN_SUCCESS, payload: data.university });
-  } catch (error) {
-    dispatch({
-      type: UNIVERSITY_LOGIN_FAIL,
-      payload: error.response.data.message,
-    });
-  }
-};
+//       dispatch({ type: UNIVERSITY_LOGIN_SUCCESS, payload: data.university });
+//     } catch (error) {
+//       dispatch({
+//         type: UNIVERSITY_LOGIN_FAIL,
+//         payload: error.response.data.message,
+//       });
+//     }
+//   };
 
 // University Register
 export const universityRegister = (universityData) => async (dispatch) => {
@@ -303,26 +304,27 @@ export const universityLogout = () => async (dispatch) => {
 // -------------------------------- Employer Actions  --------------------------------
 
 // Employer Login
-export const employerLogin = (email, password) => async (dispatch) => {
-  try {
-    dispatch({ type: EMPLOYER_LOGIN_REQUEST });
+export const employerLogin =
+  (email, password, userType) => async (dispatch) => {
+    try {
+      dispatch({ type: EMPLOYER_LOGIN_REQUEST });
 
-    const config = { headers: { "Content-Type": "application/json" } };
+      const config = { headers: { "Content-Type": "application/json" } };
 
-    const { data } = await axios.post(
-      `/api/v1/employer/login`,
-      { email, password },
-      config
-    );
+      const { data } = await axios.post(
+        `/api/v1/employer/login`,
+        { email, password, userType },
+        config
+      );
 
-    dispatch({ type: EMPLOYER_LOGIN_SUCCESS, payload: data.employer });
-  } catch (error) {
-    dispatch({
-      type: EMPLOYER_LOGIN_FAIL,
-      payload: error.response.data.message,
-    });
-  }
-};
+      dispatch({ type: EMPLOYER_LOGIN_SUCCESS, payload: data.employer });
+    } catch (error) {
+      dispatch({
+        type: EMPLOYER_LOGIN_FAIL,
+        payload: error.response.data.message,
+      });
+    }
+  };
 
 // Employer Register
 export const employerRegister = (employerData) => async (dispatch) => {

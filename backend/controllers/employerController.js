@@ -19,27 +19,27 @@ export const createEmployer = catchAsyncErrors(async (req, res, next) => {
 });
 
 // Login Recruiter
-export const loginEmployer = catchAsyncErrors(async (req, res, next) => {
-  const { email, password } = req.body;
+// export const loginEmployer = catchAsyncErrors(async (req, res, next) => {
+//   const { email, password } = req.body;
 
-  if (!email || !password) {
-    return next(new ErrorHandler("Please Enter Email & Password", 400));
-  }
+//   if (!email || !password) {
+//     return next(new ErrorHandler("Please Enter Email & Password", 400));
+//   }
 
-  const employer = await Employer.findOne({ email }).select("+password");
+//   const employer = await Employer.findOne({ email }).select("+password");
 
-  if (!employer) {
-    return next(new ErrorHandler("Invalid email or password", 401));
-  }
+//   if (!employer) {
+//     return next(new ErrorHandler("Invalid email or password", 401));
+//   }
 
-  const isPasswordMatched = await employer.comparePassword(password);
+//   const isPasswordMatched = await employer.comparePassword(password);
 
-  if (!isPasswordMatched) {
-    return next(new ErrorHandler("Invalid email or password", 401));
-  }
+//   if (!isPasswordMatched) {
+//     return next(new ErrorHandler("Invalid email or password", 401));
+//   }
 
-  sendToken(employer, 200, res);
-});
+//   sendToken(employer, 200, res);
+// });
 
 // LogOut Employer
 export const employerLogout = catchAsyncErrors(async (req, res, next) => {

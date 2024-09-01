@@ -11,11 +11,12 @@ const universitySchema = new mongoose.Schema({
     type: String,
     default: "university",
   },
+  email: { type: String, required: true, unique: true },
   description: { type: String },
   password: { type: String, required: true },
   website: { type: String },
   logo: { type: String },
-  contactEmail: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
   students: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }],
   employersInterested: [
     { type: mongoose.Schema.Types.ObjectId, ref: "Employer" },

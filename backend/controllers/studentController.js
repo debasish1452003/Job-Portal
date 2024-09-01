@@ -80,7 +80,14 @@ export const logout = catchAsyncErrors(async (req, res, next) => {
 
 // GET STUDENT DETAILS
 export const getStudentDetails = catchAsyncErrors(async (req, res, next) => {
-  const student = await Student.findById(req.student.id);
+  const student = await Student.findById(req.student.id).populate(
+    "university",
+    "name"
+  );
+
+  if (!student) {
+    return next(new ErrorHandler("Student not found", 404));
+  }
 
   res.status(200).json({
     success: true,

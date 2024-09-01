@@ -18,10 +18,6 @@ const studentSchema = new mongoose.Schema({
     ref: "University",
     required: true,
   },
-  role: {
-    type: String,
-    default: "student",
-  },
 
   degree: { type: String },
   major: { type: String },

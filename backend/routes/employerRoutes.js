@@ -5,7 +5,7 @@ import {
   createEmployer,
   employerLogout,
   getEmployerDetails,
-  loginEmployer,
+  // loginEmployer,
   updateEmployerPassword,
   updateEmployerProfile,
 } from "../controllers/employerController.js";

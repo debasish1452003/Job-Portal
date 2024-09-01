@@ -2,7 +2,7 @@ import express from "express";
 import {
   createUniversity,
   getUniversityDetails,
-  loginUniversity,
+  // loginUniversity,
   universityLogout,
   updateUniversityPassword,
   updateUniversityProfile,
@@ -18,7 +18,7 @@ router.route("/universityRegister").post(createUniversity);
 router.route("/universityLogout").get(universityLogout);
 
 router
-  .route("/university")
+  .route("/university/me")
   .get(isAuthenticatedUniversity, getUniversityDetails);
 router
   .route("/universityPassword/update")
