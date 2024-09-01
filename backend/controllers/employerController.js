@@ -2,10 +2,26 @@ import catchAsyncErrors from "../middleware/catchAsyncError.js";
 import Employer from "../models/employerModel.js";
 import sendToken from "../utils/jwtToken.js";
 import ErrorHandler from "../utils/errorhandler.js";
+import cloudinary from "cloudinary";
 
 // Create Recruitere
 export const createEmployer = catchAsyncErrors(async (req, res, next) => {
-  const { companyName, address, description, email, password } = req.body;
+  const { companyName, address, description, email, password, image } =
+    req.body;
+
+  // Handle image upload to Cloudinary
+  let imageLink = {};
+
+  if (image) {
+    const result = await cloudinary.v2.uploader.upload(image, {
+      folder: "students",
+    });
+
+    imageLink = {
+      public_id: result.public_id,
+      url: result.secure_url,
+    };
+  }
 
   const employer = await Employer.create({
     companyName,
@@ -13,6 +29,7 @@ export const createEmployer = catchAsyncErrors(async (req, res, next) => {
     description,
     email,
     password,
+    image: imageLink,
   });
 
   sendToken(employer, 201, res);

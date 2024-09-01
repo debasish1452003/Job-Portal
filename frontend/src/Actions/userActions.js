@@ -153,50 +153,25 @@ export const logoutEmployer = () => async (dispatch) => {
 
 //  ------------------------- Student Actions ----------------------
 
-// Student Login
-// export const studentLogin = (email, password, userType) => async (dispatch) => {
-//   try {
-//     dispatch({ type: STUDENT_LOGIN_REQUEST });
-
-//     const config = { headers: { "Content-Type": "application/json" } };
-
-//     const { data } = await axios.post(
-//       `/api/v1/student/login`,
-//       { email, password, userType },
-//       config
-//     );
-
-//     dispatch({ type: STUDENT_LOGIN_SUCCESS, payload: data.student });
-//   } catch (error) {
-//     dispatch({
-//       type: STUDENT_LOGIN_FAIL,
-//       payload: error.response.data.message,
-//     });
-//   }
-// };
-
-// Student Register
 export const studentRegister = (studentData) => async (dispatch) => {
   try {
     dispatch({ type: STUDENT_REGISTER_REQUEST });
 
-    const config = { headers: { "Content-Type": "multipart/form-data" } };
+    const config = { headers: { "Content-Type": "application/json" } };
 
-    const { data } = await axios.post(
-      `/api/v1/student/register`,
-      studentData,
-      config
-    );
+    const { data } = await axios.post(`/api/v1/register`, studentData, config);
 
     dispatch({ type: STUDENT_REGISTER_SUCCESS, payload: data.student });
   } catch (error) {
     dispatch({
       type: STUDENT_REGISTER_FAIL,
-      payload: error.response.data.message,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
     });
   }
 };
-
 // Load Student
 // export const loadStudent = () => async (dispatch) => {
 //   try {

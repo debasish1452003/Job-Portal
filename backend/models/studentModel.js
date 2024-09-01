@@ -19,6 +19,17 @@ const studentSchema = new mongoose.Schema({
     required: true,
   },
 
+  image: {
+    public_id: {
+      type: String,
+      // required: true,
+    },
+    url: {
+      type: String,
+      // required: true,
+    },
+  },
+
   degree: { type: String },
   major: { type: String },
   graduationYear: { type: Number },

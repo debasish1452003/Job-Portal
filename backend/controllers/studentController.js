@@ -3,6 +3,7 @@ import Student from "../models/studentModel.js";
 import University from "../models/universityModel.js";
 import sendToken from "../utils/jwtToken.js";
 import Job from "../models/jobModel.js";
+import cloudinary from "cloudinary";
 
 // Create Student user
 export const createStudent = catchAsyncErrors(async (req, res, next) => {
@@ -11,57 +12,71 @@ export const createStudent = catchAsyncErrors(async (req, res, next) => {
     lastName,
     email,
     password,
-    university,
     degree,
     major,
     graduationYear,
     skills,
+    university,
+    image,
   } = req.body;
 
+  let imageLink = {};
+
+  if (typeof image === "string" && image.startsWith("data:image/")) {
+    try {
+      const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
+
+      // Upload to Cloudinary
+      const result = await cloudinary.v2.uploader.upload(
+        `data:image/jpeg;base64,${base64Data}`,
+        {
+          folder: "students",
+        }
+      );
+
+      imageLink = {
+        public_id: result.public_id,
+        url: result.secure_url,
+      };
+    } catch (error) {
+      console.error("Error uploading to Cloudinary:", error);
+      // return next(
+      //   new Error(
+      //     "Failed to upload image to Cloudinary. Please check the image format."
+      //   )
+      // );
+    }
+  } else {
+    console.error("Received image is not in the expected format.");
+    // return next(
+    //   new Error("Invalid image format. Please upload a valid image.")
+    // );
+  }
+
+  // Create the student record in the database
   const student = await Student.create({
     firstName,
     lastName,
     email,
     password,
-    university,
     degree,
     major,
     graduationYear,
     skills,
+    university,
+    image: imageLink,
   });
 
+  // Update the university with the new student
   await University.findByIdAndUpdate(
     university,
     { $push: { students: student._id } },
     { new: true, runValidators: true }
   );
 
+  // Send response
   sendToken(student, 201, res);
 });
-
-// Login Student
-// export const loginStudent = catchAsyncErrors(async (req, res, next) => {
-//   const { email, password } = req.body;
-
-//   // Checking if the user has provided both email and password
-//   if (!email || !password) {
-//     return next(new ErrorHandler("Please Enter Email & Password", 400));
-//   }
-
-//   const user = await Student.findOne({ email }).select("+password");
-
-//   if (!user) {
-//     return next(new ErrorHandler("Invalid email or password", 401));
-//   }
-
-//   const isPasswordMatched = await user.comparePassword(password);
-
-//   if (!isPasswordMatched) {
-//     return next(new ErrorHandler("Invalid email or password", 401));
-//   }
-
-//   sendToken(user, 200, res);
-// });
 
 // LogOut Student
 export const logout = catchAsyncErrors(async (req, res, next) => {

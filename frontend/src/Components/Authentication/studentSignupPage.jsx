@@ -1,83 +1,282 @@
-import React from "react";
-import { MdOutlineMailOutline } from "react-icons/md";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { MdOutlineMailOutline, MdDateRange } from "react-icons/md";
 import { HiAcademicCap } from "react-icons/hi";
-import { MdDateRange } from "react-icons/md";
-import { FaFreeCodeCamp } from "react-icons/fa6";
+import { FaUserAlt, FaPhotoVideo, FaFreeCodeCamp } from "react-icons/fa";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { studentRegister } from "../../Actions/userActions";
+import { useSnackbar } from "notistack";
+import imageCompression from 'browser-image-compression';
+
+
+
 function StudentSignupPage() {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    degree: "",
+    major: "",
+    graduationYear: "",
+    skills: "",
+    university: "",
+  });
+
+  const [photo, setPhoto] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState("/default-avatar.jpg");
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+
+  const handlePhotoChange = async (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+
+      // Options for compression
+      const options = {
+        maxSizeMB: 1, // Maximum size in MB
+        maxWidthOrHeight: 1024, // Maximum width or height
+        useWebWorker: true, // Use Web Worker for faster compression
+      };
+
+      try {
+        // Compress the image
+        const compressedFile = await imageCompression(file, options);
+
+        // Create a FileReader to read the compressed file
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64String = reader.result;
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            image: base64String,
+          }));
+          setPhotoPreview(URL.createObjectURL(compressedFile));
+        };
+
+        // Read the file as a data URL (Base64)
+        reader.readAsDataURL(compressedFile);
+
+        // Set the compressed file in the state
+        setPhoto(compressedFile);
+      } catch (error) {
+        console.error('Error compressing image:', error);
+      }
+    }
+  };
+
+
+
+  const handlePhotoRemove = () => {
+    setPhoto(null);
+    setPhotoPreview("/default-avatar.jpg");
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.password ||
+      !formData.university
+    ) {
+      enqueueSnackbar("All required fields must be filled out.", {
+        variant: "error",
+      });
+      return;
+    }
+
+    const studentData = new FormData();
+    Object.keys(formData).forEach((key) => {
+      studentData.append(key, formData[key]);
+    });
+    if (photo) {
+      studentData.append("image", photo);
+    }
+
+    try {
+      await dispatch(studentRegister(studentData));
+      enqueueSnackbar("Registration successful!", {
+        variant: "success",
+      });
+      navigate("/login");
+    } catch (error) {
+      enqueueSnackbar(
+        error.response?.data?.message || "Registration failed. Please try again.",
+        {
+          variant: "error",
+        }
+      );
+      console.error("Submission error:", error);
+    }
+  };
+
   return (
-    <div className="border-2 border-green-500 mt-10 py-4 mx-4 rounded-xl lg:w-2/6 lg:mx-auto">
-      <h1 className="mb-6 text-2xl"><span className="text-green-500">Sign Up </span> Page For Student</h1>
-      <form className="flex flex-col justify-center items-center gap-2">
-        <div className="flex border-2 h-10 w-3/4  bg-gray-300">
-          <FaFreeCodeCamp className="my-auto mx-3 h-6 w-6 " />
-          <input
-            placeholder="firstname"
-            type="text"
-            className="px-2 w-full"
-          />
-        </div>
-        <div className="flex border-2 h-10 w-3/4  bg-gray-300">
-          <FaFreeCodeCamp className="my-auto mx-3 h-6 w-6 " />
-          <input
-            placeholder="lastname"
-            type="text"
-            className="px-2 w-full"
-          />
-        </div>
-        <div className="flex border-2 h-10 w-3/4  bg-gray-300">
-          <MdOutlineMailOutline className="my-auto mx-3 h-6 w-6 " />
-          <input
-            placeholder="email"
-            type="email"
-            className="px-2 w-full"
-          />
-        </div>
-        <div className="flex border-2 h-10 w-3/4  bg-gray-300">
-          <HiAcademicCap className="my-auto mx-3 h-6 w-6 " />
-          <input
-            placeholder="degree"
-            type="text"
-            className="px-2 w-full"
-          />
-        </div>
-        <div className="flex border-2 h-10 w-3/4  bg-gray-300">
-          <HiAcademicCap className="my-auto mx-3 h-6 w-6 " />
-          <input
-            placeholder="major degree"
-            type="text"
-            className="px-2 w-full"
-          />
-        </div>
-        <div className="flex border-2 h-10 w-3/4  bg-gray-300">
-          <MdDateRange className="my-auto mx-3 h-6 w-6 " />
-          <input
-            placeholder="expected graduation year"
-            type="number"
-            className="px-2 w-full"
-          />
-        </div>
-        <div className="flex border-2 h-10 w-3/4  bg-gray-300">
-          <FaFreeCodeCamp className="my-auto mx-3 h-6 w-6 " />
-          <input
-            placeholder="skills"
-            type="text"
-            className="px-2 w-full"
-          />
-        </div>
-        <div className="flex border-2 h-10 w-3/4  bg-gray-300">
-          <RiLockPasswordLine className="my-auto mx-3 h-6 w-6 " />
-          <input
-            placeholder="password"
-            type="text"
-            className="w-full px-2"
-          />
-        </div>
-        <button type="submit" className="text-white bg-gradient-to-r from-green-500 to-cyan-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 w-2/5 mt-4">Sign in</button>
-        <p className="text-base">Alreday have an accout ? <Link to="/login" className='text-xl text-green-600'>Login</Link></p>
-      </form>
-      
+    <div className="mt-8 flex justify-center">
+      <div className="border-2 border-green-500 py-4 px-6 mt-10 rounded-xl lg:w-2/6 lg:mx-auto bg-white shadow-lg">
+        <h1 className="mb-6 text-2xl text-center">
+          <span className="text-green-500">Sign Up</span> Page For Student
+        </h1>
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <div className="flex border-2 h-10 w-full bg-gray-300 rounded-md">
+            <FaUserAlt className="my-auto mx-3 h-6 w-6" />
+            <input
+              name="firstName"
+              placeholder="First Name"
+              type="text"
+              className="px-2 w-full bg-transparent"
+              value={formData.firstName}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="flex border-2 h-10 w-full bg-gray-300 rounded-md">
+            <FaUserAlt className="my-auto mx-3 h-6 w-6" />
+            <input
+              name="lastName"
+              placeholder="Last Name"
+              type="text"
+              className="px-2 w-full bg-transparent"
+              value={formData.lastName}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="flex border-2 h-10 w-full bg-gray-300 rounded-md">
+            <MdOutlineMailOutline className="my-auto mx-3 h-6 w-6" />
+            <input
+              name="email"
+              placeholder="Email"
+              type="email"
+              className="px-2 w-full bg-transparent"
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="flex border-2 h-10 w-full bg-gray-300 rounded-md">
+            <RiLockPasswordLine className="my-auto mx-3 h-6 w-6" />
+            <input
+              name="password"
+              placeholder="Password"
+              type="password"
+              className="px-2 w-full bg-transparent"
+              value={formData.password}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="flex border-2 h-10 w-full bg-gray-300 rounded-md">
+            <HiAcademicCap className="my-auto mx-3 h-6 w-6" />
+            <input
+              name="degree"
+              placeholder="Degree"
+              type="text"
+              className="px-2 w-full bg-transparent"
+              value={formData.degree}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="flex border-2 h-10 w-full bg-gray-300 rounded-md">
+            <HiAcademicCap className="my-auto mx-3 h-6 w-6" />
+            <input
+              name="major"
+              placeholder="Major"
+              type="text"
+              className="px-2 w-full bg-transparent"
+              value={formData.major}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="flex border-2 h-10 w-full bg-gray-300 rounded-md">
+            <MdDateRange className="my-auto mx-3 h-6 w-6" />
+            <input
+              name="graduationYear"
+              placeholder="Expected Graduation Year"
+              type="number"
+              className="px-2 w-full bg-transparent"
+              value={formData.graduationYear}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="flex border-2 h-10 w-full bg-gray-300 rounded-md">
+            <FaFreeCodeCamp className="my-auto mx-3 h-6 w-6" />
+            <input
+              name="skills"
+              placeholder="Skills"
+              type="text"
+              className="px-2 w-full bg-transparent"
+              value={formData.skills}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="flex border-2 h-10 w-full bg-gray-300 rounded-md">
+            <FaUserAlt className="my-auto mx-3 h-6 w-6" />
+            <input
+              name="university"
+              placeholder="University"
+              type="text"
+              className="px-2 w-full bg-transparent"
+              value={formData.university}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className="relative border-2 h-32 w-full bg-gray-300 rounded-md">
+            <input
+              type="file"
+              accept="image/*"
+              className="absolute inset-0 opacity-0 cursor-pointer"
+              onChange={handlePhotoChange}
+            />
+            {photo && (
+              <div className="relative h-full w-full">
+                <img
+                  src={photoPreview}
+                  alt="Profile Preview"
+                  className="object-contain w-full h-full rounded-md"
+                />
+                <button
+                  type="button"
+                  className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"
+                  onClick={handlePhotoRemove}
+                >
+                  X
+                </button>
+              </div>
+            )}
+            {!photo && (
+              <div className="flex items-center justify-center h-full text-gray-500">
+                <FaPhotoVideo className="mr-2 h-6 w-6" />
+                <span>Upload Photo</span>
+              </div>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            className="text-white bg-gradient-to-r from-green-500 to-cyan-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center mt-4"
+          >
+            Sign Up
+          </button>
+          <p className="text-base text-center">
+            Already have an account?{" "}
+            <Link to="/login" className="text-xl text-green-600">
+              Login
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }

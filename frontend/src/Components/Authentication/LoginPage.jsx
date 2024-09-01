@@ -28,18 +28,6 @@ const LoginPage = () => {
   const validRoles = ["student", "university", "employer"];
 
 
-  // const loginSubmit = (e) => {
-  //   if (!validRoles.includes(role)) {
-  //     console.error("Invalid role specified");
-  //     enqueueSnackbar("Invalid role specified. Please try again.", {
-  //       variant: "error",
-  //     });
-  //     return;
-  //   }
-  //   e.preventDefault();
-  //   setFormSubmitted(true);
-  //   dispatch(login(loginEmail, loginPassword, role));
-  // };
 
   const loginSubmit = (e) => {
     e.preventDefault();

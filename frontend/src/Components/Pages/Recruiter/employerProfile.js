@@ -4,13 +4,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import Loader from "../../layout/Loader/Loader";
 import { loadEmployer } from "../../../Actions/userActions";
+import { useNavigate } from "react-router-dom";
 
 const EmployerProfile = () => {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const loading = useSelector((state) => state.user.loading);
-  const employer = useSelector((state) => state.user.employer);
+  const employer = useSelector((state) => state.user.employer.student);
 
   // Fetch employer data if it doesn't exist
   useEffect(() => {
@@ -159,7 +161,9 @@ const EmployerProfile = () => {
           <Button variant="danger" className="me-2">
             Delete
           </Button>
-          <Button variant="success">Create Job</Button>
+          <Button variant="success" onClick={() => navigate("createJob")}>
+            Create Job
+          </Button>
         </Col>
       </Row>
     </Container>

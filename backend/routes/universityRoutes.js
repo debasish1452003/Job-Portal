@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createUniversity,
+  getUniversitiesByName,
   getUniversityDetails,
   // loginUniversity,
   universityLogout,
@@ -26,5 +27,7 @@ router
 router
   .route("/university/update")
   .put(isAuthenticatedUniversity, updateUniversityProfile);
+
+router.get("/universities", getUniversitiesByName);
 
 export default router;

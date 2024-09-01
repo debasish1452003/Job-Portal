@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { clearErrors, getAllJobs } from "../../Actions/jobActions.js";
 import Loader from "../layout/Loader/Loader.js";
 import { useSnackbar } from "notistack";
-import JobCard from "./JobCard";
+import JobCard from "./JobCard.js";
 import MetaData from "../layout/MetaData.js";
 
 const Home = () => {

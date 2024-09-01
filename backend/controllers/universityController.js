@@ -2,10 +2,25 @@ import catchAsyncErrors from "../middleware/catchAsyncError.js";
 import University from "../models/universityModel.js";
 import ErrorHandler from "../utils/errorhandler.js";
 import sendToken from "../utils/jwtToken.js";
+import cloudinary from "cloudinary";
 
 // Create University
 export const createUniversity = catchAsyncErrors(async (req, res, next) => {
-  const { name, address, description, email, password } = req.body;
+  const { name, address, description, email, password, image } = req.body;
+
+  // Handle image upload to Cloudinary
+  let imageLink = {};
+
+  if (image) {
+    const result = await cloudinary.v2.uploader.upload(image, {
+      folder: "students",
+    });
+
+    imageLink = {
+      public_id: result.public_id,
+      url: result.secure_url,
+    };
+  }
 
   const university = await University.create({
     name,
@@ -13,6 +28,7 @@ export const createUniversity = catchAsyncErrors(async (req, res, next) => {
     password,
     description,
     email,
+    image: imageLink,
   });
 
   sendToken(university, 201, res);
@@ -73,6 +89,31 @@ export const updateUniversityPassword = catchAsyncErrors(
     sendToken(university, 200, res);
   }
 );
+
+export const getUniversitiesByName = async (req, res) => {
+  try {
+    const { name } = req.query;
+
+    if (!name) {
+      return res
+        .status(400)
+        .json({ message: "Name query parameter is required" });
+    }
+
+    console.log(`Searching for universities with name: ${name}`);
+
+    const universities = await University.find({
+      name: { $regex: new RegExp(name, "i") },
+    });
+
+    console.log(`Found universities: ${JSON.stringify(universities)}`);
+
+    res.status(200).json({ success: true, data: universities });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
 
 // Update University Profile
 export const updateUniversityProfile = catchAsyncErrors(

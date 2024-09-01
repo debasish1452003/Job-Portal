@@ -10,6 +10,16 @@ const employerSchema = new mongoose.Schema({
     type: String,
     default: "recruiter",
   },
+  image: {
+    public_id: {
+      type: String,
+      required: true,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
+  },
   address: { type: String, required: true },
   description: { type: String },
   website: { type: String },

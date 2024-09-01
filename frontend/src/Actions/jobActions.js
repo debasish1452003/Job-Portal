@@ -9,6 +9,9 @@ import {
   APPLY_FOR_JOB_REQUEST,
   APPLY_FOR_JOB_SUCCESS,
   APPLY_FOR_JOB_FAIL,
+  GET_JOB_DETAILS_REQUEST,
+  GET_JOB_DETAILS_SUCCESS,
+  GET_JOB_DETAILS_FAIL,
   CLEAR_ERRORS,
 } from "../Constants/jobConstants";
 
@@ -29,6 +32,25 @@ export const createJob = (jobData) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: CREATE_JOB_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// Get Job Details by ID
+export const getJobDetails = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: GET_JOB_DETAILS_REQUEST });
+
+    const { data } = await axios.get(`/api/v1/job/${id}`);
+
+    dispatch({
+      type: GET_JOB_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: GET_JOB_DETAILS_FAIL,
       payload: error.response.data.message,
     });
   }

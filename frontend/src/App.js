@@ -24,6 +24,8 @@ import UniversityProfile from "./Components/Pages/University/universityProfile.j
 import EmployerProfile from "./Components/Pages/Recruiter/employerProfile.js";
 import About from "./Components/Pages/about.js";
 import Contact from "./Components/Pages/contact.js";
+import CreateJob from "./Components/Pages/Recruiter/createJob.js";
+import JobDescription from "./Components/Home/Job/jobDescription.js";
 
 function App() {
   return (
@@ -53,6 +55,10 @@ function App() {
               <ProtectedRoute element={EmployerProfile} userType="employer" />
             }
           />
+          <Route
+            path="/employer/profile/createJob"
+            element={<ProtectedRoute element={CreateJob} userType="employer" />}
+          />
           <Route path="/jobs" element={<AllJobs />} />
           <Route path="/universitysignup" element={<UniversitySignupPage />} />
           <Route path="/studentsignup" element={<StudentSignupPage />} />
@@ -63,6 +69,7 @@ function App() {
           <Route path="*" element={<PageNotFound />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/job/:id" element={<JobDescription />} />
           {/* <Route path="/jobs" element={<AllJobs />} /> */}
 
           <Route path="/" element={<Navigate to="/home" />} />

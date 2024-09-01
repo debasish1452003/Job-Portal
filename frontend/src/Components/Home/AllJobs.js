@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { clearErrors, getAllJobs } from "../../Actions/jobActions.js";
 import Loader from "../layout/Loader/Loader";
-import JobCard from "./Job";
+import JobCard from "./Job.js";
 import Pagination from "react-js-pagination";
 // import Slider from "@material-ui/core/Slider";
 import Slider from "@mui/material/Slider";
