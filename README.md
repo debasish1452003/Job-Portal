@@ -16,6 +16,6 @@ This is a job portal built using the MERN stack (MongoDB, Express.js, React.js, 
 - **Backend:** Node.js, Express.js
 - **Database:** MongoDB
 - **Image Management:** Cloudinary
-- **Notifications:** Notyf, Notistack
+- **Notifications:**  Notistack
 
  
