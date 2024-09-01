@@ -6,7 +6,6 @@ import bcrypt from "bcryptjs";
 import ErrorHandler from "../utils/errorhandler.js";
 import catchAsyncError from "../middleware/catchAsyncError.js";
 import sendToken from "../utils/jwtToken.js";
-
 // All Login Controlls
 export const login = catchAsyncError(async (req, res, next) => {
   const { email, password, userType } = req.body;
