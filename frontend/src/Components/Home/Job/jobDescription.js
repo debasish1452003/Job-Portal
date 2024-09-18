@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getJobDetails } from "../../../Actions/jobActions";
+import { applyForJob, getJobDetails } from "../../../Actions/jobActions";
 import { useSnackbar } from "notistack";
+import Loader from "../../layout/Loader/Loader";
 
 const JobDescription = () => {
   const { id } = useParams();
@@ -15,6 +16,14 @@ const JobDescription = () => {
     return new Intl.NumberFormat("en-IN").format(salary);
   };
 
+  const handleClick = () => {
+    if (error) {
+      enqueueSnackbar(error, { variant: "error" });
+    }
+
+    dispatch(applyForJob(id));
+  };
+
   useEffect(() => {
     if (error) {
       enqueueSnackbar(error, { variant: "error" });
@@ -23,11 +32,7 @@ const JobDescription = () => {
   }, [dispatch, id, error, enqueueSnackbar]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-gray-600">Loading...</p>
-      </div>
-    );
+    return <Loader />;
   }
 
   if (!job) {
@@ -77,7 +82,10 @@ const JobDescription = () => {
         </div>
 
         <div className="flex items-center justify-between mt-6">
-          <button className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200 transform hover:scale-105">
+          <button
+            className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200 transform hover:scale-105"
+            onClick={handleClick}
+          >
             Apply Now
           </button>
 

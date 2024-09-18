@@ -47,7 +47,7 @@ export const getAllJobs = catchAsyncErrors(async (req, res, next) => {
     req.query
   )
     .search()
-    .filter();
+    .filter(); 
 
   apiFeature.pagination(resultPerPage);
   let jobs = await apiFeature.query;

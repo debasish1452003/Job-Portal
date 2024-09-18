@@ -21,6 +21,7 @@ router.route("/universityLogout").get(universityLogout);
 router
   .route("/university/me")
   .get(isAuthenticatedUniversity, getUniversityDetails);
+
 router
   .route("/universityPassword/update")
   .put(isAuthenticatedUniversity, updateUniversityPassword);

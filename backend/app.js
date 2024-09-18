@@ -9,11 +9,15 @@ import job from "./routes/jobRoutes.js";
 import auth from "./routes/authRoutes.js";
 
 import errorMiddleware from "./middleware/error.js";
+import fileUpload from "express-fileupload";
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload());
 
 // Config Dotenv
 dotenv.config({ path: "backend/config/config.env" });

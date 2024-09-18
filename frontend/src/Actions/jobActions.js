@@ -86,7 +86,7 @@ export const applyForJob = (jobId) => async (dispatch) => {
   try {
     dispatch({ type: APPLY_FOR_JOB_REQUEST });
 
-    const { data } = await axios.put(`/api/v1/job/${jobId}/apply`);
+    const { data } = await axios.post(`/api/v1/jobApply/${jobId}`);
 
     dispatch({ type: APPLY_FOR_JOB_SUCCESS, payload: data });
   } catch (error) {

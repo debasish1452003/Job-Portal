@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { Container, Row, Col, Button, Card, Dropdown } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import Loader from "../../layout/Loader/Loader";
-import { loadEmployer } from "../../../Actions/userActions";
+import { clearErrors, loadEmployer } from "../../../Actions/userActions";
 import { useNavigate } from "react-router-dom";
 
 const EmployerProfile = () => {
@@ -11,15 +11,35 @@ const EmployerProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const loading = useSelector((state) => state.user.loading);
-  const employer = useSelector((state) => state.user.employer.student);
+  const { error, loading, isAuthenticatedEmployer, employer } = useSelector(
+    (state) => state.user
+  );
+  console.log(employer);
 
-  // Fetch employer data if it doesn't exist
+  const isDetailedEmployer = useCallback(
+    (employer) => {
+      return employer && employer.employer;
+    },
+    [employer]
+  );
+
   useEffect(() => {
-    if (!employer) {
+    if (error) {
+      enqueueSnackbar(error, { variant: "error" });
+      dispatch(clearErrors());
+    }
+
+    if (isAuthenticatedEmployer && !isDetailedEmployer(employer)) {
       dispatch(loadEmployer());
     }
-  }, [dispatch, employer]);
+  }, [
+    dispatch,
+    employer,
+    error,
+    enqueueSnackbar,
+    isAuthenticatedEmployer,
+    isDetailedEmployer,
+  ]);
 
   if (loading) return <Loader />;
 
@@ -34,8 +54,10 @@ const EmployerProfile = () => {
     );
   }
 
-  const jobsPosted = employer.jobsPosted || [];
-  const interestedUniversities = employer.interestedUniversities || [];
+  const emp = employer && employer.employer;
+
+  const jobsPosted = (emp && emp.jobsPosted) || [];
+  const interestedUniversities = (emp && emp.interestedUniversities) || [];
 
   return (
     <Container
@@ -54,13 +76,13 @@ const EmployerProfile = () => {
               width: "150px",
               height: "150px",
               objectFit: "contain",
-              //   borderRadius: "50%",
+
               margin: "0 auto",
               marginBottom: "20px",
             }}
           />
-          <h1 className="mb-3">{employer.companyName}</h1>
-          <h4 className="mb-4 text-muted">{employer.email}</h4>
+          <h1 className="mb-3">{emp && emp.companyName}</h1>
+          <h4 className="mb-4 text-muted">{emp && emp.email}</h4>
         </Col>
       </Row>
 
@@ -69,19 +91,19 @@ const EmployerProfile = () => {
           <Card className="p-3 shadow-sm">
             <Card.Title className="mb-3">Employer Information</Card.Title>
             <p>
-              <strong>Address:</strong> {employer.address}
+              <strong>Address:</strong> {emp && emp.address}
             </p>
             <p>
-              <strong>Description:</strong> {employer.description || "N/A"}
+              <strong>Description:</strong> {(emp && emp.description) || "N/A"}
             </p>
             <p>
               <strong>Website:</strong>{" "}
               <a
-                href={employer.website}
+                href={emp && emp.website}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {employer.website || "N/A"}
+                {(emp && emp.website) || "N/A"}
               </a>
             </p>
           </Card>
@@ -103,9 +125,6 @@ const EmployerProfile = () => {
                     <Dropdown.Item key={index}>
                       <p>
                         <strong>Job Title:</strong> {job.title || "N/A"}
-                      </p>
-                      <p>
-                        <strong>Company:</strong> {job.companyName || "N/A"}
                       </p>
                     </Dropdown.Item>
                   ))

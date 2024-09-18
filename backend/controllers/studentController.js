@@ -17,41 +17,7 @@ export const createStudent = catchAsyncErrors(async (req, res, next) => {
     graduationYear,
     skills,
     university,
-    image,
   } = req.body;
-
-  let imageLink = {};
-
-  if (typeof image === "string" && image.startsWith("data:image/")) {
-    try {
-      const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
-
-      // Upload to Cloudinary
-      const result = await cloudinary.v2.uploader.upload(
-        `data:image/jpeg;base64,${base64Data}`,
-        {
-          folder: "students",
-        }
-      );
-
-      imageLink = {
-        public_id: result.public_id,
-        url: result.secure_url,
-      };
-    } catch (error) {
-      console.error("Error uploading to Cloudinary:", error);
-      // return next(
-      //   new Error(
-      //     "Failed to upload image to Cloudinary. Please check the image format."
-      //   )
-      // );
-    }
-  } else {
-    console.error("Received image is not in the expected format.");
-    // return next(
-    //   new Error("Invalid image format. Please upload a valid image.")
-    // );
-  }
 
   // Create the student record in the database
   const student = await Student.create({
@@ -64,7 +30,11 @@ export const createStudent = catchAsyncErrors(async (req, res, next) => {
     graduationYear,
     skills,
     university,
-    image: imageLink,
+
+    // image: {
+    //   public_id: myCloud.public_id,
+    //   url: myCloud.secure_url,
+    // },
   });
 
   // Update the university with the new student
@@ -74,7 +44,6 @@ export const createStudent = catchAsyncErrors(async (req, res, next) => {
     { new: true, runValidators: true }
   );
 
-  // Send response
   sendToken(student, 201, res);
 });
 
@@ -95,10 +64,9 @@ export const logout = catchAsyncErrors(async (req, res, next) => {
 
 // GET STUDENT DETAILS
 export const getStudentDetails = catchAsyncErrors(async (req, res, next) => {
-  const student = await Student.findById(req.student.id).populate(
-    "university",
-    "name"
-  );
+  const student = await Student.findById(req.student.id)
+    .populate("university", "name address")
+    .populate("appliedJobs", "title");
 
   if (!student) {
     return next(new ErrorHandler("Student not found", 404));

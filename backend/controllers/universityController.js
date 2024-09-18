@@ -6,29 +6,32 @@ import cloudinary from "cloudinary";
 
 // Create University
 export const createUniversity = catchAsyncErrors(async (req, res, next) => {
-  const { name, address, description, email, password, image } = req.body;
+  const { name, address, description, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return next(new Error("Please provide all required fields"));
+  }
 
   // Handle image upload to Cloudinary
-  let imageLink = {};
+  // let imageLink = {};
 
-  if (image) {
-    const result = await cloudinary.v2.uploader.upload(image, {
-      folder: "students",
-    });
+  // if (image) {
+  //   const result = await cloudinary.v2.uploader.upload(image, {
+  //     folder: "students",
+  //   });
 
-    imageLink = {
-      public_id: result.public_id,
-      url: result.secure_url,
-    };
-  }
+  //   imageLink = {
+  //     public_id: result.public_id,
+  //     url: result.secure_url,
+  //   };
+  // }
 
   const university = await University.create({
     name,
     address,
+    email,
     password,
     description,
-    email,
-    image: imageLink,
   });
 
   sendToken(university, 201, res);
@@ -51,7 +54,10 @@ export const universityLogout = catchAsyncErrors(async (req, res, next) => {
 
 // GET UNIVERSITY DETAILS
 export const getUniversityDetails = catchAsyncErrors(async (req, res, next) => {
-  const university = await University.findById(req.university.id);
+  const university = await University.findById(req.university.id).populate(
+    "students",
+    "firstName lastName email"
+  );
 
   if (!university.id) {
     return next(new ErrorHandler("Student not found", 404));
@@ -122,32 +128,6 @@ export const updateUniversityProfile = catchAsyncErrors(
       name: req.body.name,
       email: req.body.email,
     };
-
-    // if (req.body.avatar && req.body.avatar !== "") {
-    //   const user = await User.findById(req.user.id);
-
-    //   if (!user) {
-    //     // Handle case where user is not found
-    //     return res.status(404).json({ message: "User not found" });
-    //   }
-
-    //   const imageId = user.avatar.public_id;
-
-    //   if (imageId) {
-    //     await cloudinary.v2.uploader.destroy(imageId);
-    //   }
-
-    //   const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-    //     folder: "avatars",
-    //     width: 150,
-    //     crop: "scale",
-    //   });
-
-    //   newUserData.avatar = {
-    //     public_id: myCloud.public_id,
-    //     url: myCloud.secure_url,
-    //   };
-    // }
 
     const university = await University.findByIdAndUpdate(
       req.university.id,

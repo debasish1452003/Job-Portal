@@ -7,9 +7,7 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 import { studentRegister } from "../../Actions/userActions";
 import { useSnackbar } from "notistack";
-import imageCompression from 'browser-image-compression';
-
-
+import imageCompression from "browser-image-compression";
 
 function StudentSignupPage() {
   const [formData, setFormData] = useState({
@@ -26,6 +24,7 @@ function StudentSignupPage() {
 
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState("/default-avatar.jpg");
+
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -34,45 +33,38 @@ function StudentSignupPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-
   const handlePhotoChange = async (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
+    const file = e.target.files[0];
 
-      // Options for compression
-      const options = {
-        maxSizeMB: 1, // Maximum size in MB
-        maxWidthOrHeight: 1024, // Maximum width or height
-        useWebWorker: true, // Use Web Worker for faster compression
-      };
-
+    if (file) {
       try {
+        // Options for image compression
+        const options = {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+        };
+
         // Compress the image
         const compressedFile = await imageCompression(file, options);
 
-        // Create a FileReader to read the compressed file
+        // Create a preview of the image
         const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64String = reader.result;
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            image: base64String,
-          }));
-          setPhotoPreview(URL.createObjectURL(compressedFile));
+        reader.onload = () => {
+          setPhotoPreview(reader.result);
         };
-
-        // Read the file as a data URL (Base64)
         reader.readAsDataURL(compressedFile);
 
-        // Set the compressed file in the state
+        // Set the compressed file as the photo
         setPhoto(compressedFile);
       } catch (error) {
-        console.error('Error compressing image:', error);
+        enqueueSnackbar("Failed to upload photo. Please try again.", {
+          variant: "error",
+        });
+        console.error("Image compression error:", error);
       }
     }
   };
-
-
 
   const handlePhotoRemove = () => {
     setPhoto(null);
@@ -81,7 +73,6 @@ function StudentSignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
 
     if (
       !formData.firstName ||
@@ -101,7 +92,7 @@ function StudentSignupPage() {
       studentData.append(key, formData[key]);
     });
     if (photo) {
-      studentData.append("image", photo);
+      studentData.append("photo", photo);
     }
 
     try {
@@ -235,11 +226,12 @@ function StudentSignupPage() {
           <div className="relative border-2 h-32 w-full bg-gray-300 rounded-md">
             <input
               type="file"
+              name="photo"
               accept="image/*"
               className="absolute inset-0 opacity-0 cursor-pointer"
               onChange={handlePhotoChange}
             />
-            {photo && (
+            {photo ? (
               <div className="relative h-full w-full">
                 <img
                   src={photoPreview}
@@ -254,8 +246,7 @@ function StudentSignupPage() {
                   X
                 </button>
               </div>
-            )}
-            {!photo && (
+            ) : (
               <div className="flex items-center justify-center h-full text-gray-500">
                 <FaPhotoVideo className="mr-2 h-6 w-6" />
                 <span>Upload Photo</span>
@@ -265,14 +256,15 @@ function StudentSignupPage() {
 
           <button
             type="submit"
-            className="text-white bg-gradient-to-r from-green-500 to-cyan-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center mt-4"
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
-            Sign Up
+            Register
           </button>
-          <p className="text-base text-center">
+
+          <p className="text-center text-sm mt-4">
             Already have an account?{" "}
-            <Link to="/login" className="text-xl text-green-600">
-              Login
+            <Link to="/login" className="text-green-500">
+              Login here
             </Link>
           </p>
         </form>

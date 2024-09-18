@@ -14,11 +14,11 @@ const universitySchema = new mongoose.Schema({
   image: {
     public_id: {
       type: String,
-      required: true,
+      // required: true,
     },
     url: {
       type: String,
-      required: true,
+      // required: true,
     },
   },
   email: { type: String, required: true, unique: true },
@@ -26,7 +26,6 @@ const universitySchema = new mongoose.Schema({
   password: { type: String, required: true },
   website: { type: String },
   logo: { type: String },
-  email: { type: String, required: true, unique: true },
   students: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }],
   employersInterested: [
     { type: mongoose.Schema.Types.ObjectId, ref: "Employer" },
