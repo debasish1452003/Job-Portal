@@ -10,11 +10,26 @@ const employerSchema = new mongoose.Schema({
     type: String,
     default: "recruiter",
   },
+  image: {
+    public_id: {
+      type: String,
+      // required: true,
+    },
+    url: {
+      type: String,
+      // required: true,
+    },
+  },
   address: { type: String, required: true },
   description: { type: String },
   website: { type: String },
   logo: { type: String },
-  email: { type: String, required: true },
+  email: {
+    type: String,
+    required: [true, "Please Enter Your Email"],
+    unique: true,
+    validate: [validator.isEmail, "Please Enter a valid Email"],
+  },
   password: { type: String, required: true },
   jobsPosted: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job" }],
   interestedUniversities: [

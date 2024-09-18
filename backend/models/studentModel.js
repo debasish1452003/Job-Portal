@@ -18,9 +18,16 @@ const studentSchema = new mongoose.Schema({
     ref: "University",
     required: true,
   },
-  role: {
-    type: String,
-    default: "student",
+
+  image: {
+    public_id: {
+      type: String,
+      // required: true,
+    },
+    url: {
+      type: String,
+      // required: true,
+    },
   },
 
   degree: { type: String },

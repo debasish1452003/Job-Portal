@@ -3,6 +3,7 @@ import Student from "../models/studentModel.js";
 import University from "../models/universityModel.js";
 import sendToken from "../utils/jwtToken.js";
 import Job from "../models/jobModel.js";
+import cloudinary from "cloudinary";
 
 // Create Student user
 export const createStudent = catchAsyncErrors(async (req, res, next) => {
@@ -11,25 +12,32 @@ export const createStudent = catchAsyncErrors(async (req, res, next) => {
     lastName,
     email,
     password,
-    university,
     degree,
     major,
     graduationYear,
     skills,
+    university,
   } = req.body;
 
+  // Create the student record in the database
   const student = await Student.create({
     firstName,
     lastName,
     email,
     password,
-    university,
     degree,
     major,
     graduationYear,
     skills,
+    university,
+
+    // image: {
+    //   public_id: myCloud.public_id,
+    //   url: myCloud.secure_url,
+    // },
   });
 
+  // Update the university with the new student
   await University.findByIdAndUpdate(
     university,
     { $push: { students: student._id } },
@@ -38,30 +46,6 @@ export const createStudent = catchAsyncErrors(async (req, res, next) => {
 
   sendToken(student, 201, res);
 });
-
-// Login Student
-// export const loginStudent = catchAsyncErrors(async (req, res, next) => {
-//   const { email, password } = req.body;
-
-//   // Checking if the user has provided both email and password
-//   if (!email || !password) {
-//     return next(new ErrorHandler("Please Enter Email & Password", 400));
-//   }
-
-//   const user = await Student.findOne({ email }).select("+password");
-
-//   if (!user) {
-//     return next(new ErrorHandler("Invalid email or password", 401));
-//   }
-
-//   const isPasswordMatched = await user.comparePassword(password);
-
-//   if (!isPasswordMatched) {
-//     return next(new ErrorHandler("Invalid email or password", 401));
-//   }
-
-//   sendToken(user, 200, res);
-// });
 
 // LogOut Student
 export const logout = catchAsyncErrors(async (req, res, next) => {
@@ -80,7 +64,13 @@ export const logout = catchAsyncErrors(async (req, res, next) => {
 
 // GET STUDENT DETAILS
 export const getStudentDetails = catchAsyncErrors(async (req, res, next) => {
-  const student = await Student.findById(req.student.id);
+  const student = await Student.findById(req.student.id)
+    .populate("university", "name address")
+    .populate("appliedJobs", "title");
+
+  if (!student) {
+    return next(new ErrorHandler("Student not found", 404));
+  }
 
   res.status(200).json({
     success: true,

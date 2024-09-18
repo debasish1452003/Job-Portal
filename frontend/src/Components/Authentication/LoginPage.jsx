@@ -25,11 +25,26 @@ const LoginPage = () => {
   const [role, setRole] = useState("");
   const [formSubmitted, setFormSubmitted] = useState(false);
 
+  const validRoles = ["student", "university", "employer"];
+
+
+
   const loginSubmit = (e) => {
     e.preventDefault();
+
+    if (!validRoles.includes(role)) {
+      console.error("Invalid role specified");
+      enqueueSnackbar("Invalid role specified. Please try again.", {
+        variant: "error",
+      });
+      return;
+    }
+
     setFormSubmitted(true);
-    dispatch(login(loginEmail, loginPassword, role));
+    const userType = role;
+    dispatch(login(loginEmail, loginPassword, userType));
   };
+
 
   const redirect = location.search ? location.search.split("=")[1] : "/Home";
 
@@ -106,7 +121,7 @@ const LoginPage = () => {
               <option value="">Select Role</option>
               <option value="student">Student</option>
               <option value="university">University</option>
-              <option value="employer">Employer</option>
+              <option value="employer">Recruiter</option>
             </select>
           </div>
           <button

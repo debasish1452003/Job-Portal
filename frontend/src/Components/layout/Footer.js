@@ -9,7 +9,7 @@ import {
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-gray-300 py-8 mt-8">
+    <footer className="bg-gray-800 text-gray-300 py-8 mt-6">
       {" "}
       {/* Added mt-8 for margin top */}
       <div className="container mx-auto px-4">

@@ -18,6 +18,25 @@ export const createJob = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// Get Job Details by ID
+export const getJobDetails = catchAsyncErrors(async (req, res, next) => {
+  const jobId = req.params.id;
+
+  const job = await Job.findById(jobId).populate("employer", "companyName");
+
+  if (!job) {
+    return res.status(404).json({
+      success: false,
+      message: "Job not found",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    job,
+  });
+});
+
 // Get all Jobs
 export const getAllJobs = catchAsyncErrors(async (req, res, next) => {
   const resultPerPage = 25;
@@ -28,7 +47,7 @@ export const getAllJobs = catchAsyncErrors(async (req, res, next) => {
     req.query
   )
     .search()
-    .filter();
+    .filter(); 
 
   apiFeature.pagination(resultPerPage);
   let jobs = await apiFeature.query;

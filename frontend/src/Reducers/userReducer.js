@@ -105,6 +105,7 @@ export const userReducer = (
     case UNIVERSITY_LOGIN_SUCCESS:
     case UNIVERSITY_REGISTER_SUCCESS:
     case LOAD_UNIVERSITY_SUCCESS:
+      if (state.university === action.payload) return state;
       return {
         ...state,
         loading: false,

@@ -3,6 +3,7 @@ import {
   applyForJob,
   createJob,
   getAllJobs,
+  getJobDetails,
 } from "../controllers/jobController.js";
 import {
   isAuthenticatedRecruiter,
@@ -24,12 +25,13 @@ router
   );
 
 router.post(
-  "/jobs/:jobId",
+  "/jobApply/:jobId",
   isAuthenticatedStudent,
   authorizeStudentRoles("student"),
   applyForJob
 );
 
 router.get("/jobs", getAllJobs);
+router.get("/job/:id", getJobDetails);
 
 export default router;

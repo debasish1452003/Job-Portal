@@ -1,7 +1,7 @@
 import ErrorHandler from "../utils/errorhandler.js";
 import catchAsyncErrors from "./catchAsyncError.js";
 import jwt from "jsonwebtoken";
-import University from "../models/universityModel.js";
+import universityUser from "../models/universityModel.js";
 
 export const isAuthenticatedUniversity = catchAsyncErrors(
   async (req, res, next) => {
@@ -15,7 +15,14 @@ export const isAuthenticatedUniversity = catchAsyncErrors(
 
     const decodedData = jwt.verify(token, process.env.JWT_SECRET);
 
-    req.university = await University.findById(decodedData.id);
+    // Check if decodedData exists and contains id
+    if (!decodedData || !decodedData.id) {
+      return next(
+        new ErrorHandler("Token is invalid, please log in again.", 401)
+      );
+    }
+
+    req.university = await universityUser.findById(decodedData.id);
     next();
   }
 );

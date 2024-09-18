@@ -2,10 +2,25 @@ import catchAsyncErrors from "../middleware/catchAsyncError.js";
 import Employer from "../models/employerModel.js";
 import sendToken from "../utils/jwtToken.js";
 import ErrorHandler from "../utils/errorhandler.js";
+import cloudinary from "cloudinary";
 
 // Create Recruitere
 export const createEmployer = catchAsyncErrors(async (req, res, next) => {
   const { companyName, address, description, email, password } = req.body;
+
+  // Handle image upload to Cloudinary
+  // let imageLink = {};
+
+  // if (image) {
+  //   const result = await cloudinary.v2.uploader.upload(image, {
+  //     folder: "students",
+  //   });
+
+  //   imageLink = {
+  //     public_id: result.public_id,
+  //     url: result.secure_url,
+  //   };
+  // }
 
   const employer = await Employer.create({
     companyName,
@@ -13,32 +28,10 @@ export const createEmployer = catchAsyncErrors(async (req, res, next) => {
     description,
     email,
     password,
+    // image: imageLink,
   });
 
   sendToken(employer, 201, res);
-});
-
-// Login Recruiter
-export const loginEmployer = catchAsyncErrors(async (req, res, next) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return next(new ErrorHandler("Please Enter Email & Password", 400));
-  }
-
-  const employer = await Employer.findOne({ email }).select("+password");
-
-  if (!employer) {
-    return next(new ErrorHandler("Invalid email or password", 401));
-  }
-
-  const isPasswordMatched = await employer.comparePassword(password);
-
-  if (!isPasswordMatched) {
-    return next(new ErrorHandler("Invalid email or password", 401));
-  }
-
-  sendToken(employer, 200, res);
 });
 
 // LogOut Employer
@@ -58,7 +51,9 @@ export const employerLogout = catchAsyncErrors(async (req, res, next) => {
 
 // GET EMPLOYER DETAILS
 export const getEmployerDetails = catchAsyncErrors(async (req, res, next) => {
-  const employer = await Employer.findById(req.employer.id);
+  const employer = await Employer.findById(req.employer.id)
+    .populate("jobsPosted", "title")
+    .populate("interestedUniversities", "name");
 
   res.status(200).json({
     success: true,

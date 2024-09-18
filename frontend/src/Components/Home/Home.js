@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { clearErrors, getAllJobs } from "../../Actions/jobActions.js";
 import Loader from "../layout/Loader/Loader.js";
 import { useSnackbar } from "notistack";
-import JobCard from "./JobCard";
+import JobCard from "./JobCard.js";
 import MetaData from "../layout/MetaData.js";
 
 const Home = () => {
@@ -40,7 +40,7 @@ const Home = () => {
           <div className="bg-gradient-to-r from-green-400 to-blue-500 text-center py-24">
             <p className="text-white text-lg">Welcome to Job Portal</p>
             <h1 className="text-white text-5xl font-bold mt-4">
-              FIND AMAZING JOBS BELOW
+              FIND YOUR DREAM JOBS BELOW
             </h1>
 
             {/* Search Bar Section */}

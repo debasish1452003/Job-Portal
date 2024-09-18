@@ -23,7 +23,7 @@ export const login = catchAsyncError(async (req, res, next) => {
     case "student":
       UserModel = Student;
       break;
-    case "recruiter":
+    case "employer":
       UserModel = Employer;
       break;
     case "university":
@@ -46,11 +46,4 @@ export const login = catchAsyncError(async (req, res, next) => {
   }
 
   sendToken(user, 200, res);
-
-  // res.status(200).json({
-  //   success: true,
-  //   token,
-  //   userType,
-  //   user,
-  // });
 });

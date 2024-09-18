@@ -1,14 +1,11 @@
-import React, { Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useSnackbar } from "notistack";
+import Loader from "../layout/Loader/Loader";
+import PageNotFound from "../layout/PageNotFound";
 
-const ProtectedRoute = ({
-  isStudent,
-  isUniversity,
-  isEmployer,
-  component: Component,
-  ...rest
-}) => {
+const ProtectedRoute = ({ element: Component, userType, ...rest }) => {
   const {
     loading,
     isAuthenticatedStudent,
@@ -16,34 +13,45 @@ const ProtectedRoute = ({
     isAuthenticatedEmployer,
   } = useSelector((state) => state.user);
 
-  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const location = useLocation();
+  const [unauthorized, setUnauthorized] = useState(false);
 
-  // Check if the user is authenticated based on the role
-  const checkAuthentication = () => {
-    if (isStudent && !isAuthenticatedStudent) {
-      navigate("/login");
-      return false;
+  const isAuthenticated = () => {
+    switch (userType) {
+      case "student":
+        return isAuthenticatedStudent;
+      case "university":
+        return isAuthenticatedUniversity;
+      case "employer":
+        return isAuthenticatedEmployer;
+      default:
+        return false;
     }
-    if (isUniversity && !isAuthenticatedUniversity) {
-      navigate("/login");
-      return false;
-    }
-    if (isEmployer && !isAuthenticatedEmployer) {
-      navigate("/login");
-      return false;
-    }
-    return true;
   };
 
-  return (
-    <Fragment>
-      {!loading && checkAuthentication() && (
-        <Routes>
-          <Route {...rest} element={<Component />} />
-        </Routes>
-      )}
-    </Fragment>
-  );
+  useEffect(() => {
+    if (loading) return;
+
+    if (!isAuthenticated()) {
+      setUnauthorized(true);
+      enqueueSnackbar("You are not authorized to view this page.", {
+        variant: "warning",
+      });
+    } else {
+      setUnauthorized(false);
+    }
+  }, [loading, isAuthenticated, enqueueSnackbar]);
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (unauthorized) {
+    return <PageNotFound />;
+  }
+
+  return <Component {...rest} />;
 };
 
 export default ProtectedRoute;
